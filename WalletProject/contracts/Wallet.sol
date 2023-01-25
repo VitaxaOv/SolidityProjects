@@ -12,6 +12,7 @@ contract Wallet is SharedWallet {
 
     function sendMoney() public payable {
         payable(this).transfer(msg.value);
+        addToMembers(address(this), 0);
         emit MoneyReceived(_msgSender(), msg.value);
     }
 
@@ -23,7 +24,7 @@ contract Wallet is SharedWallet {
             address(this).balance >= _amount,
             "Not enough money in the wallet"
         );
-        if (!isOwner()) {
+        if (!isAdmin() && !isOwner()) {
             duduceFromLimit(_amount);
         }
         address payable _to = payable(_msgSender());
